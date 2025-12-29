@@ -80,6 +80,14 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right functional requirements.
+  
+  NOTE: All requirements MUST comply with project constitution principles
+  (see `.specify/memory/constitution.md`). Ensure requirements align with:
+  - Simplicity First: Single responsibility, minimal scope
+  - Strong Security by Default: Authentication, validation, replay protection
+  - Stateless and Ephemeral: No long-term storage
+  - Minimal Tech Surface Area: Node.js/npm only
+  - Internal System Isolation: Capture service as only public entry point
 -->
 
 ### Functional Requirements

@@ -1,50 +1,95 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+==================
+Version: 0.1.0 → 1.0.0 (Initial creation)
+Modified Principles: N/A (initial)
+Added Sections: All sections (initial creation)
+Removed Sections: N/A
+Templates Requiring Updates:
+  - ✅ updated: .specify/templates/plan-template.md (added Constitution Check section with 5 principle gates)
+  - ✅ updated: .specify/templates/spec-template.md (added constitution compliance note in Requirements section)
+  - ✅ updated: .specify/templates/tasks-template.md (added constitution compliance reminder in Notes section)
+  - ⚠ pending: .specify/templates/commands/*.md (commands directory does not exist yet)
+Follow-up TODOs: None
+-->
 
-## Core Principles
+# Project Constitution: Capture Service
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+**Version:** 1.0.0  
+**Ratification Date:** 2025-01-27  
+**Last Amended Date:** 2025-01-27
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+## Purpose
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+This constitution defines the non-negotiable principles and governance rules that guide all development, architecture, and operational decisions for the Capture Service project.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+## Project Overview
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+The **Capture Service** is a small, private ingestion service whose sole purpose is to securely receive short voice recordings from a trusted mobile client, convert them into high-quality text using Wispr Flow, and forward the resulting transcription to an internal automation system.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### Motivation
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+Mobile voice capture is fast and low-friction, but consumer voice apps do not provide reliable, secure, or automatable export mechanisms. This service exists to **bridge the gap between mobile voice input and structured automation**, while maintaining security, simplicity, and full ownership of the data pipeline.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### High-Level Function
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+At a high level, the Capture Service:
+
+* Accepts authenticated voice recordings from a trusted client
+* Sends audio to Wispr Flow for transcription
+* Receives the final transcription
+* Forwards the text to an internal system for further processing
+* Discards audio immediately after use
+
+The service does **not** classify, store, or interpret content beyond transcription.
+
+## Principles
+
+### Principle 1: Simplicity First
+
+The service MUST do exactly one thing: authenticated audio in, text out. Any logic not required for secure capture or transcription MUST live elsewhere.
+
+**Rationale:** Complexity increases maintenance burden, attack surface, and operational risk. By strictly limiting scope, we ensure the service remains maintainable and auditable.
+
+### Principle 2: Strong Security by Default
+
+The service MUST assume it is internet-facing and enforce authentication, replay protection, and strict request validation to prevent unauthorized use.
+
+**Rationale:** As a public entry point, the service is a high-value target. Security cannot be an afterthought; it must be built into every layer of the service architecture.
+
+### Principle 3: Stateless and Ephemeral
+
+The service MUST NOT maintain long-term storage of audio or text. Audio exists only in memory or temporary storage for the duration of transcription.
+
+**Rationale:** Ephemeral data handling reduces privacy risk, compliance burden, and storage costs. Statelessness enables horizontal scaling and simplifies operations.
+
+### Principle 4: Minimal Tech Surface Area
+
+The service MUST use a small Node.js (npm-based) HTTP(s?) service to minimize dependencies, operational overhead, and maintenance complexity.
+
+**Rationale:** A minimal technology stack reduces attack surface, deployment complexity, and the cognitive load required to understand and maintain the system.
+
+### Principle 5: Internal System Isolation
+
+Downstream systems (automation, databases, AI workflows) MUST NOT be exposed publicly; the capture service is the only public entry point.
+
+**Rationale:** Network isolation protects internal systems from external threats and ensures that the capture service is the single point of security enforcement and monitoring.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Amendment Procedure
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+1. Proposed amendments MUST be documented with clear rationale
+2. Amendments affecting principles require explicit approval
+3. Version MUST be incremented according to semantic versioning rules
+4. All dependent templates and documentation MUST be updated in sync
+
+### Versioning Policy
+
+- **MAJOR:** Backward incompatible governance/principle removals or redefinitions
+- **MINOR:** New principle/section added or materially expanded guidance
+- **PATCH:** Clarifications, wording, typo fixes, non-semantic refinements
+
+### Compliance Review
+
+All code changes, architectural decisions, and operational procedures MUST be evaluated against these principles. Violations MUST be documented and addressed before deployment.

@@ -31,7 +31,33 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**Reference**: `.specify/memory/constitution.md`
+
+### Principle 1: Simplicity First
+- [ ] Does this feature maintain single responsibility (authenticated audio in, text out)?
+- [ ] Are all non-transcription concerns delegated to external systems?
+- [ ] Is the implementation the simplest approach that meets requirements?
+
+### Principle 2: Strong Security by Default
+- [ ] Does this feature include authentication mechanisms?
+- [ ] Are replay protection measures in place?
+- [ ] Is request validation strict and comprehensive?
+- [ ] Are security considerations addressed at every layer?
+
+### Principle 3: Stateless and Ephemeral
+- [ ] Does this feature avoid long-term storage of audio or text?
+- [ ] Is audio handled only in memory or temporary storage?
+- [ ] Are there any persistent data stores introduced? (If yes, justify in Complexity Tracking)
+
+### Principle 4: Minimal Tech Surface Area
+- [ ] Does this feature use Node.js/npm-based dependencies only?
+- [ ] Are new dependencies minimal and necessary?
+- [ ] Does this avoid introducing new technology stacks?
+
+### Principle 5: Internal System Isolation
+- [ ] Does this feature maintain the capture service as the only public entry point?
+- [ ] Are downstream systems kept private and not exposed?
+- [ ] Is network isolation preserved?
 
 ## Project Structure
 
