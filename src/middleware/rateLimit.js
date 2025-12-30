@@ -29,6 +29,12 @@ function cleanupExpiredEntries() {
   }
 }
 
+// Clean up expired entries every 5 minutes
+setInterval(cleanupExpiredEntries, 5 * 60 * 1000);
+
+// Request counter for periodic cleanup (cleanup every 100 requests)
+let requestCount = 0;
+
 /**
  * Check if client has exceeded rate limit
  * @param {string} clientId - Client identifier
@@ -39,9 +45,11 @@ function checkRateLimit(clientId) {
   const windowMs = 60 * 1000; // 1 minute
   const maxRequests = config.rateLimitRequestsPerMinute;
   
-  // Clean up expired entries periodically
-  if (Math.random() < 0.1) { // 10% chance to cleanup
+  // Clean up expired entries every 100 requests
+  requestCount++;
+  if (requestCount >= 100) {
     cleanupExpiredEntries();
+    requestCount = 0;
   }
   
   const state = rateLimitStore.get(clientId);

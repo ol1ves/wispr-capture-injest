@@ -51,25 +51,10 @@ export async function transcribeAudio(audioBuffer, contentType) {
       };
     }
     
-    // Remove trailing slashes
+    // Remove trailing slashes and append /api if not present
     apiUrl = apiUrl.replace(/\/+$/, '');
-    
-    // If URL doesn't end with /api, append it
-    // But preserve the base URL if it already includes /api/v1/dash/etc
     if (!apiUrl.endsWith('/api')) {
-      // Check if it's a base URL that needs /api appended
-      if (apiUrl.includes('wisprflow.ai') && !apiUrl.includes('/api')) {
-        apiUrl = `${apiUrl}/api`;
-      } else if (apiUrl.endsWith('/apis')) {
-        // Fix common typo: /apis -> /api
-        apiUrl = apiUrl.replace(/\/apis$/, '/api');
-      } else if (apiUrl.includes('/api/v1/dash')) {
-        // If it has /api/v1/dash, replace the rest with just /api
-        const baseMatch = apiUrl.match(/^(https?:\/\/[^\/]+)/);
-        if (baseMatch) {
-          apiUrl = `${baseMatch[1]}/api`;
-        }
-      }
+      apiUrl = `${apiUrl}/api`;
     }
     
     // Call Wispr Flow API

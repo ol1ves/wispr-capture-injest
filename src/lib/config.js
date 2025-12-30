@@ -21,7 +21,6 @@ export function loadConfig() {
     port: parseInt(process.env.PORT || '3000', 10),
     clientAllowlist: process.env.CLIENT_ALLOWLIST?.split(',').map(id => id.trim()) || [],
     rateLimitRequestsPerMinute: parseInt(process.env.RATE_LIMIT_REQUESTS_PER_MINUTE || '100', 10),
-    timestampWindowMinutes: parseInt(process.env.TIMESTAMP_WINDOW_MINUTES || '5', 10),
     maxAudioSizeMB: parseInt(process.env.MAX_AUDIO_SIZE_MB || '10', 10),
     maxAudioDurationSeconds: parseInt(process.env.MAX_AUDIO_DURATION_SECONDS || '300', 10),
     wisprFlowApiUrl: process.env.WISPR_FLOW_API_URL,

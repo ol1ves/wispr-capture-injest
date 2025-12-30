@@ -64,9 +64,13 @@ export function authenticateRequest(req, res, next) {
     
     // Check required fields
     if (!apiKey || !clientId) {
+      const missing = [];
+      if (!apiKey) missing.push('apiKey (in Authorization header or body)');
+      if (!clientId) missing.push('clientId (in request body, query parameter, or X-Client-Id header)');
+      
       const error = createErrorResponse(
         ERROR_CODES.INVALID_AUTH,
-        `Missing required authentication: ${!apiKey ? 'apiKey (in Authorization header or body)' : ''}${!apiKey && !clientId ? ' and ' : ''}${!clientId ? 'clientId (in request body, query parameter ?clientId=xxx, or X-Client-Id header)' : ''}`
+        `Missing required authentication: ${missing.join(' and ')}`
       );
       return res.status(getErrorStatus(error.error)).json(error);
     }

@@ -18,10 +18,8 @@ const config = loadConfig();
 // Create Express app
 const app = express();
 
-// Basic middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(requestLogger); // Request logging middleware
+// Request logging middleware
+app.use(requestLogger);
 
 // Handle raw audio uploads for /v1/capture endpoint
 // Only parse as raw if content-type is audio/* and not multipart

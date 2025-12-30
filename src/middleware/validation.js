@@ -28,26 +28,10 @@ function validateAudioSize(file) {
 }
 
 /**
- * Validate audio duration
- * Note: Duration validation would require audio file parsing
- * For now, we'll do basic validation. Full duration check would need
- * an audio library like node-ffprobe or similar.
- * @param {Object} file - Multer file object
- * @returns {string|null} Error message or null if valid
- */
-function validateAudioDuration(file) {
-  // TODO: Implement actual audio duration validation
-  // This would require parsing the audio file to get its duration
-  // For now, we'll return null (valid) and let Wispr Flow handle duration limits
-  // In production, you might want to use a library like node-ffprobe
-  
-  return null;
-}
-
-/**
  * Request validation middleware
- * Validates required fields, audio size, and duration
+ * Validates required fields and audio size
  * Note: This runs after multer, so req.file is available
+ * Duration validation is handled by Wispr Flow API
  */
 export function validateRequest(req, res, next) {
   try {
@@ -75,13 +59,6 @@ export function validateRequest(req, res, next) {
     const sizeError = validateAudioSize(file);
     if (sizeError) {
       const error = createErrorResponse(ERROR_CODES.FILE_TOO_LARGE, sizeError);
-      return res.status(getErrorStatus(error.error)).json(error);
-    }
-    
-    // Validate audio duration
-    const durationError = validateAudioDuration(file);
-    if (durationError) {
-      const error = createErrorResponse(ERROR_CODES.DURATION_TOO_LONG, durationError);
       return res.status(getErrorStatus(error.error)).json(error);
     }
     

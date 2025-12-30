@@ -44,7 +44,6 @@ export function requestLogger(req, res, next) {
   });
   
   console.log('[REQUEST]', JSON.stringify(requestLogData));
-  console.log('[REQUEST-HEADERS]', JSON.stringify(req.headers));
   
   // Log response when it finishes
   const originalSend = res.send;
