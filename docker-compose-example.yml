@@ -1,0 +1,28 @@
+services:
+  capture-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wispr-capture-injest
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - PORT=${PORT:-3000}
+      - CLIENT_ALLOWLIST=${CLIENT_ALLOWLIST}
+      - WISPR_FLOW_API_URL=${WISPR_FLOW_API_URL}
+      - WISPR_FLOW_API_KEY=${WISPR_FLOW_API_KEY}
+      - INTERNAL_ENDPOINT_URL=${INTERNAL_ENDPOINT_URL}
+      - INTERNAL_ENDPOINT_AUTH_TOKEN=${INTERNAL_ENDPOINT_AUTH_TOKEN}
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=${RATE_LIMIT_REQUESTS_PER_MINUTE:-100}
+      - MAX_AUDIO_SIZE_MB=${MAX_AUDIO_SIZE_MB:-10}
+      - MAX_AUDIO_DURATION_SECONDS=${MAX_AUDIO_DURATION_SECONDS:-300}
+      # API keys: Add as many as needed (API_KEY_<CLIENT_ID>)
+      - API_KEY_client-123=${API_KEY_client-123}
+      - API_KEY_client-456=${API_KEY_client-456}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

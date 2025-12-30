@@ -90,6 +90,39 @@ npm start
 
 The service will start on port 3000 (or the port specified in `PORT` environment variable).
 
+### Docker Deployment
+
+#### Standalone Docker Container
+
+```bash
+# Build the image
+docker build -t wispr-capture-injest .
+
+# Run with environment variables
+docker run -d \
+  --name wispr-capture-injest \
+  -p 3000:3000 \
+  -e CLIENT_ALLOWLIST=client-123,client-456 \
+  -e WISPR_FLOW_API_URL=https://api.wisprflow.com \
+  -e WISPR_FLOW_API_KEY=your-key \
+  -e INTERNAL_ENDPOINT_URL=https://internal.example.com \
+  -e API_KEY_client-123=your-api-key \
+  wispr-capture-injest
+```
+
+#### Docker Compose Stack
+
+The provided `docker-compose.yml` uses environment variables from your host. Set them before running:
+
+```bash
+export CLIENT_ALLOWLIST=client-123,client-456
+export WISPR_FLOW_API_URL=https://api.wisprflow.com
+export WISPR_FLOW_API_KEY=your-key
+export INTERNAL_ENDPOINT_URL=https://internal.example.com
+export API_KEY_client-123=your-api-key
+docker-compose up -d
+```
+
 ## API Endpoints
 
 ### POST /v1/capture

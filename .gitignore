@@ -20,3 +20,7 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+
+# Docker
+docker-compose-local.yml
+docker-compose.yml
