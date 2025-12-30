@@ -21,10 +21,10 @@ const app = express();
 // Request logging middleware
 app.use(requestLogger);
 
-// Handle raw audio uploads for /v1/capture endpoint
+// Handle raw audio uploads for /capture endpoint
 // Only parse as raw if content-type is audio/* and not multipart
 const rawAudioParser = express.raw({ type: ['audio/*'], limit: '10mb' });
-app.use('/v1/capture', (req, res, next) => {
+app.use('/capture', (req, res, next) => {
   const contentType = req.headers['content-type'] || '';
   // Only use raw parser for audio/* that isn't multipart/form-data
   if (contentType.startsWith('audio/') && !contentType.includes('multipart')) {
@@ -39,7 +39,7 @@ app.get('/health', healthCheck);
 // Capture endpoint with all middleware
 // Order: rateLimit → upload (multer) → authenticate → validate → capture handler
 // Note: Multer must come before auth/validation to parse multipart form data
-app.post('/v1/capture', 
+app.post('/capture', 
   rateLimit,
   uploadMiddleware,
   authenticateRequest,

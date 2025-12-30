@@ -125,7 +125,7 @@ docker-compose up -d
 
 ## API Endpoints
 
-### POST /v1/capture
+### POST /capture
 
 Submit a voice recording for transcription.
 
@@ -150,7 +150,7 @@ Submit a voice recording for transcription.
 
 **Example Request**:
 ```bash
-curl -X POST http://localhost:3000/v1/capture \
+curl -X POST http://localhost:3000/capture \
   -H "Authorization: Bearer your-api-key" \
   -H "X-Client-Id: client-123" \
   -F "audio=@recording.mp3"
@@ -218,7 +218,7 @@ src/
 │   ├── forwarding.js    # Internal endpoint forwarding with retries
 │   └── cleanup.js       # Audio artifact cleanup
 ├── routes/
-│   ├── capture.js       # POST /v1/capture endpoint handler
+│   ├── capture.js       # POST /capture endpoint handler
 │   └── health.js        # GET /health endpoint handler
 ├── lib/
 │   ├── audio-converter.js # Audio format conversion utilities

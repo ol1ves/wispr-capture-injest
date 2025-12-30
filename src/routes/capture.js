@@ -1,6 +1,6 @@
 /**
  * Capture route handler
- * POST /v1/capture endpoint for voice recording submission
+ * POST /capture endpoint for voice recording submission
  */
 
 import multer from 'multer';

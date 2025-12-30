@@ -109,3 +109,5 @@ The Capture Service is stateless and ephemeral by design. It does not maintain p
 - Timestamp validation prevents replay attacks (5-minute window)
 - Rate limiting prevents abuse (100 requests/minute per client)
 
+
+

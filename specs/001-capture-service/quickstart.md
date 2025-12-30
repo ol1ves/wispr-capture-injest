@@ -119,7 +119,7 @@ MAX_AUDIO_DURATION_SECONDS=300
 
 ### 5. API Endpoints
 
-#### POST /v1/capture
+#### POST /capture
 
 **Request**: multipart/form-data
 - `audio`: Binary audio file

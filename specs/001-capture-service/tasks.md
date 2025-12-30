@@ -77,9 +77,9 @@
 
 - [x] T019 [P] [US1] Implement transcription service in src/services/transcription.js (forward audio to Wispr Flow API, handle timeouts up to 60 seconds, return transcription text or error)
 - [x] T020 [P] [US1] Implement forwarding service in src/services/forwarding.js (send transcription to internal endpoint with exponential backoff: 3 retries with 1s, 2s, 4s delays)
-- [x] T021 [US1] Implement capture route handler in src/routes/capture.js (POST /v1/capture endpoint, multipart/form-data parsing with multer, orchestrate transcription and forwarding)
+- [x] T021 [US1] Implement capture route handler in src/routes/capture.js (POST /capture endpoint, multipart/form-data parsing with multer, orchestrate transcription and forwarding)
 - [x] T022 [US1] Implement request ID generation for correlation in src/routes/capture.js
-- [x] T023 [US1] Integrate capture route into Express app in src/app.js (register /v1/capture route with all middleware)
+- [x] T023 [US1] Integrate capture route into Express app in src/app.js (register /capture route with all middleware)
 - [x] T024 [US1] Implement error handling for transcription failures in src/routes/capture.js (return appropriate error codes: 502 for Wispr Flow unavailable, 500 for transcription errors)
 - [x] T025 [US1] Implement error handling for forwarding failures in src/routes/capture.js (return 503 if all retries exhausted, 500 for other forwarding errors)
 - [x] T026 [US1] Implement success response formatting in src/routes/capture.js (return { success: true, message: "...", requestId: "..." })
