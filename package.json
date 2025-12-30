@@ -1,0 +1,31 @@
+{
+  "name": "wispr-capture-injest",
+  "version": "1.0.0",
+  "description": "Capture Service - Secure voice recording transcription and forwarding service",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [
+    "capture",
+    "transcription",
+    "voice",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "av": "^0.4.9",
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mp3": "^0.1.0",
+    "multer": "^2.0.2",
+    "wav-encoder": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

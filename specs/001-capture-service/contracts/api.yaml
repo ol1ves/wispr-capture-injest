@@ -1,0 +1,206 @@
+openapi: 3.0.3
+info:
+  title: Capture Service API
+  description: |
+    Secure API for receiving voice recordings, transcribing via Wispr Flow, and forwarding to internal systems.
+    All requests require HMAC authentication and are rate-limited to 100 requests per minute per client.
+  version: 1.0.0
+  contact:
+    name: Capture Service Team
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: http://localhost:3000/v1
+    description: Local development server
+
+paths:
+  /capture:
+    post:
+      summary: Submit voice recording for transcription
+      description: |
+        Accepts an authenticated voice recording, transcribes it via Wispr Flow,
+        forwards the transcription to an internal endpoint, and returns a success/failure acknowledgment.
+        Audio is processed ephemerally and deleted immediately after transcription.
+      operationId: captureVoice
+      security:
+        - hmacAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - audio
+                - clientId
+                - timestamp
+                - signature
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: Voice recording audio file (max 10MB, max 5 minutes duration)
+                clientId:
+                  type: string
+                  description: Unique identifier for the trusted client
+                  example: "client-123"
+                timestamp:
+                  type: integer
+                  format: int64
+                  description: Unix timestamp in milliseconds of request creation
+                  example: 1706284800000
+                signature:
+                  type: string
+                  description: HMAC-SHA256 signature of request body
+                  example: "a1b2c3d4e5f6..."
+      responses:
+        '200':
+          description: Success - Transcription forwarded to internal endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Bad Request - Invalid request (missing fields, invalid format, size/duration limits exceeded)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid or missing HMAC signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - Client not in allowlist or timestamp outside valid window
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too Many Requests - Rate limit exceeded (100 requests per minute)
+          headers:
+            Retry-After:
+              description: Number of seconds to wait before retrying
+              schema:
+                type: integer
+                example: 60
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error - Transcription or forwarding failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Bad Gateway - Wispr Flow API unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service Unavailable - Internal endpoint unavailable after retries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Returns service health status for monitoring
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+components:
+  securitySchemes:
+    hmacAuth:
+      type: http
+      scheme: bearer
+      description: |
+        HMAC-SHA256 signature authentication. The signature must be included in the request body
+        and validated against the client's shared secret. The signature is computed over the
+        request body (audio file + metadata) and timestamp.
+      bearerFormat: HMAC-SHA256
+
+  schemas:
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Transcription forwarded successfully"
+        requestId:
+          type: string
+          description: Unique identifier for this request (for correlation)
+          example: "req-abc123"
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error code
+          enum:
+            - INVALID_AUTH
+            - INVALID_TIMESTAMP
+            - CLIENT_NOT_ALLOWED
+            - FILE_TOO_LARGE
+            - DURATION_TOO_LONG
+            - RATE_LIMIT_EXCEEDED
+            - TRANSCRIPTION_FAILED
+            - FORWARDING_FAILED
+            - INTERNAL_ERROR
+          example: "INVALID_AUTH"
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid HMAC signature"
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - unhealthy
+          example: "healthy"
+        timestamp:
+          type: integer
+          format: int64
+          description: Current server timestamp
+          example: 1706284800000
+        version:
+          type: string
+          description: Service version
+          example: "1.0.0"
+
