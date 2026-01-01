@@ -7,17 +7,19 @@ import AV from 'av';
 import encodeWav from 'wav-encoder';
 import { createRequire } from 'module';
 
-// Load MP3 codec for av library
-// This registers the MP3 demuxer and decoder with Aurora.js
-// Using createRequire because mp3 package uses CommonJS
+// Load codecs for av library
+// This registers the MP3 and AAC demuxers and decoders with Aurora.js
+// Using createRequire because codec packages use CommonJS
 const require = createRequire(import.meta.url);
 require('mp3');
+require('aac');
 
 // Register codecs for av
 // Note: av requires codecs to be registered separately
-// We'll handle MP3 and WAV formats
+// We'll handle MP3, M4A/MP4A, and WAV formats
 // The av library will automatically detect and use available codecs
 // MP3 support is provided by the 'mp3' codec package
+// M4A/MP4A (AAC) support is provided by the 'aac' codec package
 // WAV format is natively supported by av
 
 /**
@@ -136,7 +138,7 @@ function decodeAudio(audioBuffer, contentType) {
 /**
  * Convert audio buffer to 16kHz WAV format and base64 encode
  * @param {Buffer} audioBuffer - Audio file buffer
- * @param {string} contentType - MIME type of audio file (e.g., 'audio/mpeg', 'audio/wav')
+ * @param {string} contentType - MIME type of audio file (e.g., 'audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/m4a')
  * @returns {Promise<string>} Base64-encoded 16kHz WAV audio string
  */
 export async function convertTo16kHzWav(audioBuffer, contentType) {
